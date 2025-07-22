@@ -14,7 +14,7 @@
 <body>
 <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
     <div class="container-fluid">
-        <a class="navbar-brand" href="/">Tencoding</a>
+        <a class="navbar-brand" href="/">Blog</a>
         <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
             <span class="navbar-toggler-icon"></span>
         </button>
@@ -32,11 +32,30 @@
                     <li class="nav-item">
                         <a class="nav-link" href="/board/save-form">글쓰기</a>
                     </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/user/update-form">회원정보보기</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="/logout">로그아웃</a>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown">
+                            {{#sessionUser.profileImagePath}}
+                                <img src="{{sessionUser.profileImagePath}}" alt="프로필"
+                                     class="rounded-circle me-1"
+                                     style="width: 24px; height: 24px; object-fit: cover;">
+                            {{/sessionUser.profileImagePath}}
+                            {{^sessionUser.profileImagePath}}
+                                <i class="fas fa-user"></i>
+                            {{/sessionUser.profileImagePath}}
+                            {{sessionUser.username}}
+                        </a>
+                        <ul class="dropdown-menu">
+                            <li class="nav-item">
+                                <a class="dropdown-item" href="/user/update-form">
+                                    <i class="fas fa-edit"></i>회원정보 수정</a>
+                            </li>
+                            <li>
+                                <hr class="dropdown-divider">
+                            </li>
+                            <li class="nav-item">
+                                <a class="dropdown-item" href="/logout"><i class="fas fa-sign-out-alt"></i>로그아웃</a>
+                            </li>
+                        </ul>
                     </li>
                 {{/sessionUser}}
             </ul>

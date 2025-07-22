@@ -1,9 +1,11 @@
 package com.blog.board;
 
+import com.blog._core.errors.exception.Exception400;
 import com.blog.user.User;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
+import org.springframework.web.multipart.MultipartFile;
 
 public class BoardRequest {
 
@@ -36,6 +38,5 @@ public class BoardRequest {
         @Size(min = 1, max = 1000, message = "내용은 1~1000자 이내로 작성해주세요")
         private String content;
     }
-
 
 }

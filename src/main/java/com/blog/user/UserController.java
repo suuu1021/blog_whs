@@ -4,13 +4,13 @@ import com.blog.utils.Define;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
 @RequiredArgsConstructor
 @Controller
@@ -71,4 +71,23 @@ public class UserController {
         return "redirect:/";
     }
 
+    @PostMapping("user/upload-profile-image")
+    public String uploadProfileImage(@RequestParam(name = "profileImage") MultipartFile multipartFile,
+                                     HttpSession session) {
+        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
+        UserRequest.ProfileImageDTO profileImageDTO = new UserRequest.ProfileImageDTO();
+        profileImageDTO.setProfileImage(multipartFile);
+        profileImageDTO.validate();
+        User updateUser = userService.uploadProfileImage(sessionUser.getId(), multipartFile);
+        session.setAttribute(Define.SESSION_USER, updateUser);
+        return "redirect:/user/update-form";
+    }
+
+    @PostMapping("user/delete-profile-image")
+    public String deleteProfileImage(HttpSession session) {
+        User sessionUser = (User) session.getAttribute(Define.SESSION_USER);
+        User updateUser = userService.deleteProfileImage(sessionUser.getId());
+        session.setAttribute(Define.SESSION_USER, updateUser);
+        return "redirect:/user/update-form";
+    }
 }

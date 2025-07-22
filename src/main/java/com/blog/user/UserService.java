@@ -4,6 +4,9 @@ import com.blog._core.errors.exception.Exception400;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 @RequiredArgsConstructor
 @Service
@@ -11,6 +14,37 @@ import org.springframework.transaction.annotation.Transactional;
 public class UserService {
 
     private final UserJpaRepository userJpaRepository;
+    private final ProfileUploadService profileUploadService;
+
+    // 프로필 이미지 업로드
+    @Transactional
+    public User uploadProfileImage(Long userId, MultipartFile multipartFile) {
+        User user = findById(userId);
+        String oldImagePath = user.getProfileImagePath();
+        try {
+            String newImagePath = profileUploadService.uploadProfileImage(multipartFile);
+            if (oldImagePath != null) {
+                profileUploadService.deleteProfileImage(oldImagePath);
+            }
+            user.setProfileImagePath(newImagePath);
+            return user;
+
+        } catch (IOException e) {
+            throw new Exception400("프로필 이미지 업로드에 실패했습니다");
+        }
+    }
+
+    // 프로필 이미지 삭제
+    @Transactional
+    public User deleteProfileImage (Long userId) {
+        User user = findById(userId);
+        String imagePath = user.getProfileImagePath();
+        user.setProfileImagePath(null);
+        if (imagePath != null && imagePath.isEmpty() == false) {
+            profileUploadService.deleteProfileImage(imagePath);
+        }
+        return user;
+    }
 
     // 회원가입
     @Transactional
@@ -29,7 +63,7 @@ public class UserService {
                 });
     }
 
-   // 사용자 정보 조회
+    // 사용자 정보 조회
     public User findById(Long id) {
         return userJpaRepository.findById(id).orElseThrow(() -> {
             return new Exception400("사용자를 찾을 수 없습니다.");

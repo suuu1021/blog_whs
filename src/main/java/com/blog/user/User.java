@@ -24,6 +24,8 @@ public class User {
     private String password;
     private String email;
 
+    private String profileImagePath;
+
     @CreationTimestamp
     private Timestamp createdAt;
 

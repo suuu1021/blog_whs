@@ -5,14 +5,22 @@ server:
       force: true
   port: 8080
 
-
 logging:
   level:
     root: INFO
-    com.tenco: DEBUG
+    com.blog: DEBUG
 
+file:
+  upload-dir: ${user.home}/uploads/profiles/
 
 spring:
+  servlet:
+    multipart:
+      enabled: true
+      max-file-size: 20MB
+      max-request-size: 20MB
+      location: ${java.io.tmpdir}
+
   mustache:
     suffix: .mustache
     prefix: classpath:/templates/
@@ -37,7 +45,6 @@ spring:
       mode: always
       data-locations:
         - classpath:db/data.sql
-
 
   jpa:
     open-in-view: true

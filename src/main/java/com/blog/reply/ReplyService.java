@@ -16,7 +16,6 @@ public class ReplyService {
     private final ReplyJpaRepository replyJpaRepository;
     private final BoardJpaRepository boardJpaRepository;
 
-    // 댓글 저장
     @Transactional
     public void save(ReplyRequest.SaveDTO saveDTO, User sessionUser) {
         Board board = boardJpaRepository.findById(saveDTO.getBoardId())
@@ -25,7 +24,7 @@ public class ReplyService {
         replyJpaRepository.save(reply);
     }
 
-    // 댓글 삭제
+    // 댓글 삭제 기능
     @Transactional
     public void deleteById(Long replyId, User sessionUser) {
         Reply reply = replyJpaRepository.findById(replyId).orElseThrow(() -> new Exception404("삭제할 댓글이 없습니다."));
