@@ -1,0 +1,42 @@
+server:
+  servlet:
+    encoding:
+      charset: utf-8
+      force: true
+  port: 8080
+
+logging:
+  level:
+    root: INFO
+    com.blog: DEBUG
+
+spring:
+  datasource:
+
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://localhost:3306/blog?useSSl=false&serverTimezone=Asia/Seoul
+    username: root
+    password: asd1234
+
+  h2:
+    console:
+      enabled: true
+
+  sql:
+    init:
+      mode: always
+      data-locations:
+        - classpath:db/data.sql
+
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: create
+
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 10
+
+    defer-datasource-initialization: true
