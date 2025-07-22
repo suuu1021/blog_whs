@@ -32,7 +32,7 @@ import java.sql.Timestamp;
         @JoinColumn(name = "board_id")
         private Board board;
 
-        @CreationTimestamp // 서버 pc 시간 기준
+        @CreationTimestamp
         private Timestamp createdAt;
 
         @Builder

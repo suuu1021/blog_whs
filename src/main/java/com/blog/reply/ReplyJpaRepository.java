@@ -1,4 +1,8 @@
 package com.blog.reply;
 
-public interface ReplyJpaRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository
+public interface ReplyJpaRepository extends JpaRepository<Reply, Long> {
 }

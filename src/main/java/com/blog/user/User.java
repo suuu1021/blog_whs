@@ -20,6 +20,7 @@ public class User {
 
     @Column(unique = true)
     private String username;
+
     private String password;
     private String email;
 
@@ -33,5 +34,10 @@ public class User {
         this.password = password;
         this.email = email;
         this.createdAt = createdAt;
+    }
+
+    public void update(UserRequest.UpdateDTO updateDTO) {
+        this.password = updateDTO.getPassword();
+        this.email = updateDTO.getEmail();
     }
 }

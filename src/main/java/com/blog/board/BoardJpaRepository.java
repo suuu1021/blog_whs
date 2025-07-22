@@ -13,9 +13,8 @@ public interface BoardJpaRepository extends JpaRepository<Board, Long> {
     @Query("SELECT b FROM Board b JOIN FETCH b.user u ORDER BY b.id DESC ")
     Page<Board> findAllJoinUser(Pageable pageable);
 
-        @Query("SELECT DISTINCT b FROM Board b " + "JOIN FETCH b.user u " +
-                "LEFT JOIN FETCH b.replies r " + "LEFT JOIN FETCH r.user ru " +
-                "WHERE b.id = :id")
-        Optional<Board> findByIdWithDetails(@Param("id") Long id);
+    @Query("SELECT b FROM Board b JOIN FETCH b.user u WHERE b.id = :id ")
+    Optional<Board> findByIdJoinUser(@Param("id") Long id);
+
     }
 

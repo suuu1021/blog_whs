@@ -46,16 +46,13 @@ public class Board {
         return MyDateUtil.timestampFormat(createdAt);
     }
 
-    @OrderBy("id DESC")
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "board", cascade = CascadeType.REMOVE)
-    List<Reply> replies = new ArrayList<>();
-
-    public String getWriterName() {
-        return this.getUser().getUsername();
-    }
-
     public void update(BoardRequest.UpdateDTO updateDTO) {
         this.title = updateDTO.getTitle();
         this.content = updateDTO.getContent();
     }
+
+    @OrderBy("id DESC")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "board", cascade = CascadeType.REMOVE)
+    List<Reply> replies = new ArrayList<>();
+
 }

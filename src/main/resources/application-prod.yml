@@ -1,11 +1,12 @@
 server:
   servlet:
     encoding:
-      charset: utf-8
+      charset: UTF-8
       force: true
   port: 5000
+
 
 logging:
   level:
     root: WARN
-    com.blog: INFO
+    com.blog: INFO   

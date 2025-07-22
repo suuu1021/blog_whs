@@ -3,9 +3,7 @@ package com.blog.board;
 import com.blog._core.errors.exception.Exception403;
 import com.blog._core.errors.exception.Exception404;
 import com.blog.reply.Reply;
-import com.blog.user.SessionUser;
 import com.blog.user.User;
-import com.blog.user.UserJpaRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -20,7 +18,6 @@ import java.util.List;
 public class BoardService {
 
     private final BoardJpaRepository boardJpaRepository;
-    private final UserJpaRepository userJpaRepository;
 
     // 게시글 목록 조회
     public Page<Board> findAll(Pageable pageable) {
@@ -29,8 +26,8 @@ public class BoardService {
     }
 
     // 게시글 상세 조회
-    public Board findByIdWithReplies(Long id, SessionUser sessionUser) {
-        Board board = boardJpaRepository.findByIdWithDetails(id).orElseThrow(
+    public Board findByIdWithReplies(Long id, User sessionUser) {
+        Board board = boardJpaRepository.findByIdJoinUser(id).orElseThrow(
                 () -> new Exception404("게시글을 찾을 수 없습니다."));
         if (sessionUser != null) {
             boolean isBoardOwner = board.isOwner(sessionUser.getId());
@@ -46,20 +43,26 @@ public class BoardService {
         return board;
     }
 
+    public Board findById(Long id) {
+        Board board = boardJpaRepository.findByIdJoinUser(id).orElseThrow(() -> {
+            return new Exception404("게시글을 찾을 수 없습니다.");
+        });
+        return board;
+    }
+
     // 게시글 작성
     @Transactional
-    public Board save(BoardRequest.SaveDTO saveDTO, SessionUser sessionUser) {
-        User user = userJpaRepository.getReferenceById(sessionUser.getId());
-        Board board = saveDTO.toEntity(user);
+    public Board save(BoardRequest.SaveDTO saveDTO, User sessionUser) {
+        Board board = saveDTO.toEntity(sessionUser);
         boardJpaRepository.save(board);
         return board;
     }
 
     // 게시글 수정
     @Transactional
-    public Board updateById(Long id, BoardRequest.UpdateDTO updateDTO, SessionUser sessionUser) {
+    public Board updateById(Long id, BoardRequest.UpdateDTO updateDTO, User sessionUser) {
         Board board = boardJpaRepository.findById(id).orElseThrow(() -> {
-            return new Exception404("게시글을 찾을 수 없습니다.");
+            return new Exception404("해당 게시글이 존재하지 않습니다.");
         });
         if (!board.isOwner(sessionUser.getId())) {
             throw new Exception403("본인이 작성한 게시글만 수정 가능 합니다.");
@@ -70,7 +73,7 @@ public class BoardService {
 
     // 게시글 삭제
     @Transactional
-    public void deleteById(Long id, SessionUser sessionUser) {
+    public void deleteById(Long id, User sessionUser) {
         Board board = boardJpaRepository.findById(id).orElseThrow(() -> {
             return new Exception404("해당 게시글이 존재하지 않습니다.");
         });
@@ -78,6 +81,14 @@ public class BoardService {
             throw new Exception403("본인이 작성한 게시글만 삭제 가능 합니다");
         }
         boardJpaRepository.deleteById(id);
+    }
+
+    // 게시글 소유자 확인
+    public void checkBoardOwner(Long boardId, Long userId) {
+        Board board = findById(boardId);
+        if (!board.isOwner(userId)) {
+            throw new Exception403("본인이 작성한 게시글만 수정 가능 합니다.");
+        }
     }
 
 }
